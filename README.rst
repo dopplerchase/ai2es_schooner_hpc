@@ -1,9 +1,5 @@
-Template for the Read the Docs tutorial
-=======================================
+AI2ES Schooner High Performance Computing docs github
+=====================================================
 
-This GitHub template includes fictional Python library
-with some basic Sphinx docs.
-
-Read the tutorial here:
-
-https://docs.readthedocs.io/en/stable/tutorial/
+This GitHub repo hosts the readthedocs documentation for best practices
+for using the GPUs associated with AI2ES. 
