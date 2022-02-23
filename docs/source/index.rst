@@ -34,3 +34,5 @@ Contents
    install_tensorflow
    test_gpu
    general_gpu
+   install_other_pkgs
+   other_tips

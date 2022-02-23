@@ -27,9 +27,8 @@ Edit the drive_test_gpu.sh so that the email and usernames are filled in!
 
 This is what you will see: 
 
-.. code-block:: console
-
-    GNU nano 2.3.1                                    File: drive_test_gpu.sh 
+.. code-block:: bash
+ 
     #!/bin/bash
     #SBATCH -p ai2es
     #SBATCH --nodes=1
@@ -60,7 +59,7 @@ Submit the test job to SLURM
 Running this job will result in a .out file in your home directory named: slurm-XXXXXXX.out. 
 Within this file if things worked properly, you should see something like the following (use nano to see it)
 
-.. code-block:: console
+.. code-block:: text
 
     Num GPUs Available:  1
     2022-02-02 11:35:51.381711: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE4.1 SSE4.2 AVX AVX2 FMA

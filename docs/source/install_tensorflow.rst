@@ -106,4 +106,10 @@ will take about a min for the first time importing tensorflow.
 
 If it is installed properly, there should be no errors or output, should just go to a new blank line of code. 
 
+We need to install 1 more package that will be needed to share the GPUs across users. So please do the following line 
+
+.. code-block:: console
+
+    $ pip install py3nvml
+
 Hooray! You have installed tensorflow-gpu! To test it go to the page titled "Test GPU"
