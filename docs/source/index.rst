@@ -35,4 +35,5 @@ Contents
    test_gpu
    general_gpu
    install_other_pkgs
+   tensorboard
    other_tips

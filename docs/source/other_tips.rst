@@ -43,3 +43,7 @@ but can be cumbersome to edit files right from the terminal. If you are looking 
 user interface, I suggest the use of `VS code <https://code.visualstudio.com>`_. The only thing you need to install is the extension called 
 Remote SSH. That will allow you to ssh right into schooner, navigate directories with clicks, and also 
 save by just doing cmd+s (or cntl +s on windows). Here is a screenshot from my session: 
+
+.. image:: images/vs_code_example.png
+   :align: center
+   :width: 600

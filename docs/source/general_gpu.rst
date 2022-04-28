@@ -100,6 +100,24 @@ If you know you will use ALL of the GPUs attached to a specifc node, you can use
 
 This will make sure no one else can use your node or GPUs. 
 
++++++++++++
+Naming Jobs 
++++++++++++
+
+It is still hard to antcipate how many GPUs someone is using on schooner from squeue. For example let's check 
+who is running jobs on the AI2ES nodes: 
+
+.. image:: images/squeue_example.png
+   :width: 500
+
+From the job description, we cannot tell how many GPUs are needed for their job. For transparency, I ask 
+all ai2es users to add a GX to the start of their job names. The X will be the desired number of GPUs they want. 
+Here is an example, where I am using 1 GPU. 
+
+.. image:: images/squeue_example_2.png
+   :width: 500
+
+This will make everyones life easier to see how many GPUs are available on a node, before sending in a job. 
 
 ++++++++++
 Long Jobs 

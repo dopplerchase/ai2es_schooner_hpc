@@ -60,7 +60,8 @@ Double check it worked.
 
 After running the command bash, you should see the word ‘base’ like this: 
 
-IMAGE
+.. image:: images/base_console.png
+   :width: 300
 
 Now we want to install mamba, a much faster package solver than conda. 
 
