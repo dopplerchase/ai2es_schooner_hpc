@@ -11,7 +11,7 @@ Introduction
 
 This guide is intended to help all potential users of the 
 University of Oklahoma Supercomputing Center for Education and Research (`OSCER <https://www.ou.edu/oscer>`_) High Performance Computing facility named "Schooner". 
-More specifically, this guide was build for `AI2ES <www.ai2es.org>`_ members who are using the 
+More specifically, this guide was built for (`AI2ES <www.ai2es.org>`_) members who are using the 
 Graphical Processing Units (GPUs) installed for exclusive AI2ES use. 
 
 ++++++++++
