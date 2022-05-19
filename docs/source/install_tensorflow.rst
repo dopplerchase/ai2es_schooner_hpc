@@ -63,12 +63,6 @@ After running the command bash, you should see the word ‘base’ like this:
 .. image:: images/base_console.png
    :width: 300
 
-Now we want to install mamba, a much faster package solver than conda. 
-
-.. code-block:: console
-
-    $ conda install mamba -n base -c conda-forge
-
 Congrats! We now have all the pieces in place to install tensorflow 
 
 ++++++++++++++
@@ -90,15 +84,73 @@ Activate env
 
     $ conda activate tf_gpu
 
-Install tensorflow-gpu. THIS STEP WILL TAKE A HOT MIN. Please be patient, 
-there are a lot of dependencies that need to be solved. 
+Now we want to install mamba, a much faster package solver than conda. 
 
 .. code-block:: console
 
-    $ mamba install tensorflow-gpu -c conda-forge
+    $ conda install mamba -n base -c conda-forge
 
-Make sure it worked! Open a quick python session and import tensorflow. This 
-will take about a min for the first time importing tensorflow. 
+Okay, now that we have mamba we are ready to install tensorflow. This is awesome
+because conda/mamba will automatically look for which tensorflow version your 
+machine can handle. The issue is, you are currently on the login node, where
+there are no GPUs avail. So conda/mamba will say "hey you dont have a gpu" and 
+not work. As a work around, go grab the `install_tf.sh` script from our tutorial 
+folder
+
+.. code-block:: console
+
+    $ cp /ourdisk/hpc/ai2es/shared/tutorial/install_tf.sh ./
+
+Then edit this file to have your info (emails/usernames). To do this you 
+can use nano, or any text editor of your choice. 
+
+.. code-block:: console
+
+    $nano ./install_tf.sh 
+
+This is what you will see: 
+
+.. code-block:: bash
+ 
+    #!/bin/bash
+    #SBATCH -p ai2es
+    #SBATCH --nodes=1
+    #SBATCH -n 4
+    #SBATCH --mem 16G
+    #SBATCH --time=01:00:00
+    #SBATCH --job-name=tf_install
+    #SBATCH --mail-user=username@university.edu <-- change this!
+    #SBATCH --mail-type=ALL
+    #SBATCH --mail-type=END
+
+    #need to source your bash script to access your python! 
+    source /home/username/.bashrc <-- change this to your username!
+    bash
+
+    #activate your tensorflow env
+    conda activate tf_gpu 
+
+    #use mamba to install tensorflow with the right GPU stuff 
+    mamba install tensorflow-gpu -c conda-forge
+
+Okay, now that you updated the script with your info, go ahead and submit the job. 
+
+.. code-block:: console
+
+    $ sbatch ./install_tf.sh
+
+This will take a few minutes so be patient and either wait for the email saying
+its done, or monitor the .out file. 
+
+Once you get confirmation it worked, let's do a quick test. Re-source your conda 
+
+.. code-block:: console
+
+    $ bash 
+    $ conda activate tf_gpu 
+
+Now, open a quick python session and import tensorflow. This 
+will take about a min for the first time importing tensorflow.
 
 .. code-block:: console
 

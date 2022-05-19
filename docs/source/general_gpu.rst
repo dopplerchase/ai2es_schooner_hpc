@@ -12,7 +12,7 @@ to make sure you are not hogging all the computing time to yourself.
 Understanding AI2ES Nodes
 ++++++++++++++++++++++++++
 
-As of 22 Feb 2022, AI2ES has a total of 10 GPUs that we can use. More specifically, 
+As of 18 May 2022, AI2ES has a total of 12 GPUs that we can use. More specifically, 
 we have 2 NVIDIA TESLA V100s which each have their own node (c314 and c315) and 8 NVIDIA A100s 
 that are split across 3 nodes (c731, c732 and c733). c731 has 2 A100s, while c732 
 and c733 both have 4 GPUs attached to them. The V100s have 32 GB of RAM while the A100s have 40 GB of RAM. 
@@ -72,23 +72,7 @@ tensorflow model you plan to run.
 .. code-block:: python
 
     import py3nvml
-    import numpy as np 
-
-    #number of GPUS i need: 
-    n_gpu = 1
-
-    #find out how many are compltely free 
-    free_gpus = py3nvml.get_free_gpus()
-    
-    #count how many are free 
-    avail_gpu_ids = np.where(free_gpus)[0]
-
-    #if there arent enough print it out
-    if len(avail_gpu_ids) < n_gpu: 
-        print('Not enough GPUs, your job might fail')
-    else:
-        #if there are enough, the select the ones you need 
-        py3nvml.grab_gpus(num_gpus=n_gpu, gpu_select=avail_gpu_ids)
+    py3nvml.grab_gpus(num_gpus=1, gpu_select=[0])
     
 The suggested technique is suggested. Start with n_gpu=1, then if it fails saying not enough memory, then try n_gpu=2 and so on. 
 
@@ -98,7 +82,7 @@ If you know you will use ALL of the GPUs attached to a specifc node, you can use
 
     #SBATCH --exclusive
 
-This will make sure no one else can use your node or GPUs. 
+Note that this should be included on all scripts that use the V100s (SBATCH -p ai2es_v100), because they only have 1 GPU.  
 
 +++++++++++
 Naming Jobs 
