@@ -25,6 +25,16 @@ files again later if it needs them.
 
     $ conda clean --all 
 
+If after running the clean command check your home dir space
+
+.. code-block:: console
+
+    $ du -sh /home/username/
+
+If you still have way too much stuff (>15 GB) and anaconda is not the culprit, you might want to check your hidden 
+directories. Often times pip likes to install things there (like .cache, and .local/lib/pythonX.X). You CAN remove 
+.cache and .local/lib/pythonX.X to free up space. 
+
 ++++++++++++++++++++
 Install new packages
 ++++++++++++++++++++
@@ -37,22 +47,20 @@ You are now ready to install other packages you need. For example, here is how I
     $ conda activate tf_gpu
     $ mamba install -c conda-forge matplotlib 
 
-You can repeat this for other packages. 
+You can repeat this for other packages. Remember ALWAYS use `-c conda-forge`!
 
 +++++
 UNETs
 +++++
 
-A lot of members of Dr. McGovern's Lab like the `keras_unet_collection <https://github.com/yingkaisha/keras-unet-collection>`_ python package. 
-This package helps with making UNETs be a bit less verbose when actually building the arch. 
-Here is how you would install it 
+A lot of members of Dr. McGovern's Lab have used the `keras_unet_collection <https://github.com/yingkaisha/keras-unet-collection>`_ python package. 
+This package helps with making UNETs be a bit less verbose when actually building the arch. While that original package is nice,
+I have made some changes to allow for more flexibility. If you want to use my fork do the following
 
 .. code-block:: console
 
     $ conda activate tf_gpu
-    $ pip install keras-unet-collection
-    $ pip install Pillow
-
+    $ pip install git+https://github.com/dopplerchase/keras-unet-collection.git
 
 Now you should be able to use the package. 
 To test it go ahead and try the keras_unet_collection_test.py, a script that was in the tutorial folder

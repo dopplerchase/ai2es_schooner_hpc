@@ -63,12 +63,6 @@ After running the command bash, you should see the word ‘base’ like this:
 .. image:: images/base_console.png
    :width: 300
 
-Now we want to install mamba, a much faster package solver than conda. 
-
-.. code-block:: console
-
-    $ conda install mamba -n base -c conda-forge
-
 Congrats! We now have all the pieces in place to install tensorflow 
 
 ++++++++++++++
@@ -90,14 +84,80 @@ Activate env
 
     $ conda activate tf_gpu
 
-Install tensorflow-gpu. THIS STEP WILL TAKE A HOT MIN. Please be patient, 
-there are a lot of dependencies that need to be solved. 
+Now we want to install mamba, a much faster package solver than conda. 
 
 .. code-block:: console
 
-    $ mamba install tensorflow-gpu -c conda-forge
+    $ conda install mamba -c conda-forge
 
-Make sure it worked! Open a quick python session and import tensorflow. This 
+.. note::
+
+   Quick important note on what `-c conda-forge` means. So this is a channel that has packages that all seem to 
+   work together better. In my experience ALWAYS use this flag when installing packages. Another note on packages,
+   try to always stick with mamba/conda installing things. Mixing pip and conda installs can make things messy. 
+   Use pip if you must, but try not to.
+
+ 
+
+Okay, now we are ready to finally install tensorflow. There is one key trick we need to do though. So when you logged in
+you are located on the `login node`. This node does not show that we have GPUs. Why this is important is because tensorflow
+needs a VERY specific version of its package to match with the software that runs with the GPUs. So, if you want to use the 
+GPUs and dont want to go hunting for software libraries, you will need to install tensorflow using a script submitted to 
+our AI2ES nodes. 
+
+To do this, go grab my template script here 
+
+.. code-block:: console
+
+    $ cp /ourdisk/hpc/ai2es/shared/tutorial/install_tf.sh
+
+or you can copy the code from here: 
+
+.. code-block:: bash
+
+    #!/bin/bash
+    #SBATCH -p ai2es
+    #SBATCH --nodes=1
+    #SBATCH -n 4
+    #SBATCH --mem 16G
+    #SBATCH --time=01:00:00
+    #SBATCH --job-name=tf_install
+    #SBATCH --mail-user=username@university.edu <-- change this!
+    #SBATCH --mail-type=ALL
+    #SBATCH --mail-type=END
+    #SBATCH --output=/home/username/R-%x.%j.out <-- change this!
+    #SBATCH --error=/home/username/R-%x.%j.err <-- change this!
+
+
+    #THIS SCRIPT ASSUMES YOU ALREADY HAVE AN ENV NAMED
+    #tf_gpu AND YOU ALREADY HAVE MAMBA
+
+    #need to source your bash script to access your python!
+    source /home/username/.bashrc <-- change this to your username!
+    bash
+
+    #activate your tensorflow env
+    conda activate tf_gpu <-- change this if you have a different name
+
+    #use mamba to install tensorflow with the right GPU stuff
+    mamba install -c conda-forge tensorflow
+
+Please change the lines I pointed out and delete my `<-- change this`. Otherwise slurm will get mad. Now that you have 
+the updated script we can submit it 
+
+.. code-block:: console
+
+    $ sbatch ./install_tf
+
+Wait for the job to finish. You can either wait for the email, or you can check up on it with 
+
+.. code-block:: console
+
+    $ squeue -u username
+
+if you put YOUR username in. It should show you what jobs you have running. Once it is done running, 
+check the .err file to make sure there were no errors. If not, go ahead and check to make 
+sure it worked! Open a quick python session and import tensorflow. This 
 will take about a min for the first time importing tensorflow. 
 
 .. code-block:: console
@@ -105,7 +165,8 @@ will take about a min for the first time importing tensorflow.
     $ python 
     >>> import tensorflow as tf    
 
-If it is installed properly, there should be no errors or output, should just go to a new blank line of code. 
+If it is installed properly, there shouldnt be any import errors. There might be a warning saying "hey no GPUs found"
+but thats okay. 
 
 We need to install 1 more package that will be needed to share the GPUs across users. So please do the following line 
 

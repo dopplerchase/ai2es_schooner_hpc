@@ -12,7 +12,7 @@ to make sure you are not hogging all the computing time to yourself.
 Understanding AI2ES Nodes
 ++++++++++++++++++++++++++
 
-As of 22 Feb 2022, AI2ES has a total of 10 GPUs that we can use. More specifically, 
+As of 16 Aug 2022, AI2ES has a total of 12 GPUs that we can use. More specifically, 
 we have 2 NVIDIA TESLA V100s which each have their own node (c314 and c315) and 8 NVIDIA A100s 
 that are split across 3 nodes (c731, c732 and c733). c731 has 2 A100s, while c732 
 and c733 both have 4 GPUs attached to them. The V100s have 32 GB of RAM while the A100s have 40 GB of RAM. 
@@ -65,32 +65,16 @@ to the node you are using. Consider the example where your deep learning model o
 This job would be able to fit entirely on 1 GPU. So a more appropriate use of your job would be to specifically only use 1 GPU, 
 not all 4 (or 2 if you are on c731). 
 
-To do this, we will use that pip package `py3nvml <https://github.com/fbcotter/py3nvml>`_ which allows use to see
-if any other GPUs are in use, and only select the completely free ones. Please add the following lines of code to EVERY 
-tensorflow model you plan to run. 
+To do this, we will use that pip package `py3nvml <https://github.com/fbcotter/py3nvml>`_ which allows use to select the GPU 
+you wish to use. 
 
 .. code-block:: python
 
     import py3nvml
-    import numpy as np 
-
-    #number of GPUS i need: 
-    n_gpu = 1
-
-    #find out how many are compltely free 
-    free_gpus = py3nvml.get_free_gpus()
+    py3nvml.grab_gpus(num_gpus=1, gpu_select=[0])
     
-    #count how many are free 
-    avail_gpu_ids = np.where(free_gpus)[0]
-
-    #if there arent enough print it out
-    if len(avail_gpu_ids) < n_gpu: 
-        print('Not enough GPUs, your job might fail')
-    else:
-        #if there are enough, the select the ones you need 
-        py3nvml.grab_gpus(num_gpus=n_gpu, gpu_select=avail_gpu_ids)
-    
-The suggested technique is suggested. Start with n_gpu=1, then if it fails saying not enough memory, then try n_gpu=2 and so on. 
+The following technique is suggested. Start with n_gpu=1, then if it fails saying not enough memory, then try n_gpu=2 
+(you will have to change gpu_select to be [0,1]) and so on. 
 
 If you know you will use ALL of the GPUs attached to a specifc node, you can use the following flag in your sbatch 
 
@@ -98,26 +82,10 @@ If you know you will use ALL of the GPUs attached to a specifc node, you can use
 
     #SBATCH --exclusive
 
-This will make sure no one else can use your node or GPUs. 
+This will make sure no one else can use your node or GPUs. Quick note, if you are using ALL of the GPUs you should be doing 
+distributed training. If you don't know what distributed training is, your probably don't need it. 
 
-+++++++++++
-Naming Jobs 
-+++++++++++
-
-It is still hard to antcipate how many GPUs someone is using on schooner from squeue. For example let's check 
-who is running jobs on the AI2ES nodes: 
-
-.. image:: images/squeue_example.png
-   :width: 500
-
-From the job description, we cannot tell how many GPUs are needed for their job. For transparency, I ask 
-all ai2es users to add a GX to the start of their job names. The X will be the desired number of GPUs they want. 
-Here is an example, where I am using 1 GPU. 
-
-.. image:: images/squeue_example_2.png
-   :width: 500
-
-This will make everyones life easier to see how many GPUs are available on a node, before sending in a job. 
+If you are confused by all this, please reach out to me (Randy Chase; randychase 'at' ou 'dot' edu). 
 
 ++++++++++
 Long Jobs 
