@@ -3,7 +3,7 @@ Welcome to the AI2ES Schooner HPC Guide
 
 .. note::
 
-   This project is under active development. Last edit made on 18 May 2022 by RJC
+   This project is under active development. Last edit made on 17 Aug 2022 by RJC
 
 ++++++++++++
 Introduction
