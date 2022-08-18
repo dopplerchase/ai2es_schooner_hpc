@@ -12,11 +12,32 @@ to make sure you are not hogging all the computing time to yourself.
 Understanding AI2ES Nodes
 ++++++++++++++++++++++++++
 
-As of 18 May 2022, AI2ES has a total of 12 GPUs that we can use. More specifically, 
-we have 2 NVIDIA TESLA V100s which each have their own node (c314 and c315) and 8 NVIDIA A100s 
-that are split across 3 nodes (c731, c732 and c733). c731 has 2 A100s, while c732 
-and c733 both have 4 GPUs attached to them. The V100s have 32 GB of RAM while the A100s have 40 GB of RAM. 
-The V100s are about half as fast as the A100s, so keep that in mind if you notice speed differences between then nodes.
+As of 17 Aug 2022, AI2ES has a total of 12 GPUs that we own
+and can use. More specifically, we have 2 NVIDIA V100s
+(previous generation) and 10 NVIDIA A100s (current generation).
+
+Inside some of these nodes, "NVlink" connects the GPUs together
+at high bandwidth (i.e., can share information quickly):
+
+``c314``, ``c315``: single V100 each (32 GB GPU memory each)
+
+``c731``: dual A100s (40 GB GPU memory), with NVlink between GPUs (600 GB/sec)
+
+``c732``, ``c733``: quad A100s each (40 GB GPU memory each), with NVlink between GPUs (600 GB/sec)
+
+In the Fall semester of 2022 AI2ES will have a two more GPU nodes, which have
+arrived at OU and are waiting to be deployed:
+
+``TBD``: 2 nodes, quad A100s each (40 GB GPU memory each), with NVlink among GPUs (600 GB/sec)
+
+In addition to the new AI2ES resources, AI2ES project members will soon also have
+access to OSCER-owned GPUs as well:
+
+``TBD``: 3 nodes, dual A100s each (40 GB GPU memory each),
+NO NVlink
+
+``TBD``: 3 nodes, dual A100s each (80 GB GPU memory each),
+with NVlink between GPUs in the same node (600 GB/sec)
 
 In order to request ANY of the nodes available, add the following line of code to your sbatch file
 
@@ -24,7 +45,7 @@ In order to request ANY of the nodes available, add the following line of code t
 
     #SBATCH -p ai2es
 
-The priorty list for this command will be c314, c315, c731, c732 and then c733. So usually you will
+The priorty list for this command will be ``c314``, ``c315``, ``c731``, ``c732`` and then ``c733``. So usually you will
 get allocated the V100s first. 
 
 If you want to specifcally get the V100 add the following
@@ -65,16 +86,16 @@ to the node you are using. Consider the example where your deep learning model o
 This job would be able to fit entirely on 1 GPU. So a more appropriate use of your job would be to specifically only use 1 GPU, 
 not all 4 (or 2 if you are on c731). 
 
-To do this, we will use that pip package `py3nvml <https://github.com/fbcotter/py3nvml>`_ which allows use to see
-if any other GPUs are in use, and only select the completely free ones. Please add the following lines of code to EVERY 
-tensorflow model you plan to run. 
+To do this, we will use that pip package `py3nvml <https://github.com/fbcotter/py3nvml>`_ which allows use to select the GPU 
+you wish to use. 
 
 .. code-block:: python
 
     import py3nvml
     py3nvml.grab_gpus(num_gpus=1, gpu_select=[0])
     
-The suggested technique is suggested. Start with n_gpu=1, then if it fails saying not enough memory, then try n_gpu=2 and so on. 
+The following technique is suggested. Start with n_gpu=1, then if it fails saying not enough memory, then try n_gpu=2 
+(you will have to change gpu_select to be [0,1]) and so on. 
 
 If you know you will use ALL of the GPUs attached to a specifc node, you can use the following flag in your sbatch 
 
@@ -82,26 +103,10 @@ If you know you will use ALL of the GPUs attached to a specifc node, you can use
 
     #SBATCH --exclusive
 
-Note that this should be included on all scripts that use the V100s (SBATCH -p ai2es_v100), because they only have 1 GPU.  
+This will make sure no one else can use your node or GPUs. Quick note, if you are using ALL of the GPUs you should be doing 
+distributed training. If you don't know what distributed training is, your probably don't need it. 
 
-+++++++++++
-Naming Jobs 
-+++++++++++
-
-It is still hard to antcipate how many GPUs someone is using on schooner from squeue. For example let's check 
-who is running jobs on the AI2ES nodes: 
-
-.. image:: images/squeue_example.png
-   :width: 500
-
-From the job description, we cannot tell how many GPUs are needed for their job. For transparency, I ask 
-all ai2es users to add a GX to the start of their job names. The X will be the desired number of GPUs they want. 
-Here is an example, where I am using 1 GPU. 
-
-.. image:: images/squeue_example_2.png
-   :width: 500
-
-This will make everyones life easier to see how many GPUs are available on a node, before sending in a job. 
+If you are confused by all this, please reach out to me (Randy Chase; randychase 'at' ou 'dot' edu). 
 
 ++++++++++
 Long Jobs 
