@@ -1,3 +1,5 @@
+.. _test_gpu:
+
 Test GPU
 =========
 
