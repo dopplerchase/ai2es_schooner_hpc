@@ -1,3 +1,5 @@
+.. _install_other_pkgs: 
+
 Install Other Pkgs
 ==================
 
@@ -23,7 +25,7 @@ files again later if it needs them.
 
 .. code-block:: console
 
-    $ conda clean --all 
+    $ mamba clean --all 
 
 If after running the clean command check your home dir space
 
@@ -44,24 +46,27 @@ You are now ready to install other packages you need. For example, here is how I
 
 .. code-block:: console
 
-    $ conda activate tf_gpu
+    $ mamba activate tf_gpu
     $ mamba install -c conda-forge matplotlib 
 
 You can repeat this for other packages. Remember ALWAYS use `-c conda-forge`!
 
-+++++
-UNETs
-+++++
+++++++
+U-Nets
+++++++
 
-A lot of members of Dr. McGovern's Lab have used the `keras_unet_collection <https://github.com/yingkaisha/keras-unet-collection>`_ python package. 
-This package helps with making UNETs be a bit less verbose when actually building the arch. While that original package is nice,
-I have made some changes to allow for more flexibility. If you want to use my fork do the following
+A lot of members of Dr. McGovern's Lab have used the `keras_unet_collection <https://github.com/ai2es/keras-unet-collection>`_ python package. 
+This package helps with making U-Nets be a bit less verbose when actually building the arch. While that `original package <https://github.com/yingkaisha/keras-unet-collection>`_ is nice,
+we have made some changes to allow for more flexibility. If you want to use my fork do the following
 
 .. code-block:: console
 
-    $ conda activate tf_gpu
+    $ mamba activate tf_gpu
     $ pip install git+https://github.com/dopplerchase/keras-unet-collection.git
 
-Now you should be able to use the package. 
-To test it go ahead and try the keras_unet_collection_test.py, a script that was in the tutorial folder
-that builds a very simple UNET model. 
+You might need to install pillow if it says ``PIL not found`` or something of the sort. 
+
+.. code-block:: console
+
+    [USERNAME@schooner1]$ mamba activate tf_gpu
+    (tf-gpu) [USERNAME@schooner1]$ mamba install -c conda-forge pillow
