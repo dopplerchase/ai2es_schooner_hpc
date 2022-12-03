@@ -7,7 +7,7 @@ copyright = '2022, Randy Chase'
 author = 'Randy Chase'
 
 release = '0.0'
-version = '0.0.1'
+version = '0.0.2'
 
 # -- General configuration
 
