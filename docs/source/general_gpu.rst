@@ -18,9 +18,9 @@ Understanding AI2ES Nodes
 Current Setup
 -------------
 
-As of 02 Dec 2022, AI2ES has a total of 12 GPUs that we own
+As of 18 Dec 2022, AI2ES has a total of 20 GPUs that we own
 and can use. More specifically, we have 2 NVIDIA V100s
-(previous generation) and 10 NVIDIA A100s (current generation).
+(previous generation) and 18 NVIDIA A100s (current generation).
 
 Inside some of these nodes, "NVlink" connects the GPUs together
 at high bandwidth (i.e., can share information quickly):
@@ -29,19 +29,7 @@ at high bandwidth (i.e., can share information quickly):
 
 ``c731``: dual A100s (40 GB GPU RAM), with NVlink between GPUs (600 GB/sec)
 
-``c732``, ``c733``: quad A100s each (40 GB GPU RAM each), with NVlink between GPUs (600 GB/sec)
-
--------------
-Future Setup
--------------
-
-____________________
-New AI2ES Resources
-____________________
-
-In late December of 2022 AI2ES will have a two more GPU nodes, which have been physically installed but are waiting on software:
-
-``TBD``: 2 nodes, quad A100s each (40 GB GPU RAM each), with NVlink among GPUs (600 GB/sec)
+``c732``, ``c733``, ``c829``, ``c830``: quad A100s each (40 GB GPU RAM each), with NVlink between GPUs (600 GB/sec)
 
 ______________________
 New Schooner Resources
@@ -176,7 +164,7 @@ Then you should be all set. The job should get placed on c733 and GPU 3. Now, if
     #SBATCH --ntasks=4
     #SBATCH --mem=16G
 
-``--ntasks=4`` will allocated 4 cores to your job and ``--mem=8G`` will allocate 8 GB of RAM. 
+``--ntasks=4`` will allocated 4 cores to your job and ``--mem=16G`` will allocate 16 GB of RAM. 
 
 ---------
 Long Jobs 

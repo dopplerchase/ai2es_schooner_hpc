@@ -3,7 +3,7 @@
 Github Tips
 ============
 
-.. image:: images/Github-Emblem.png
+.. image:: images/GitHub-Emblem.png
    :width: 400
    :align: center
 
