@@ -36,11 +36,12 @@ New Schooner Resources
 ______________________
 
 In addition to the new AI2ES resources, AI2ES project members will also have
-access to OSCER-owned GPUs as well (*no date for implementation yet*):
+access to OSCER-owned GPUs as well. At this time I don't have specifics, but know
+there is a partition named ``gpu`` which is where the OSCER gpus can be used. 
 
-``TBD``: 3 nodes, dual A100s each (40 GB GPU RAM each), NO NVlink (i.e., can't share data across them)
+``?``: 3 nodes, dual A100s each (40 GB GPU RAM each), NO NVlink (i.e., can't share data across them)
 
-``TBD``: 3 nodes, dual A100s each (80 GB GPU RAM each), with NVlink between GPUs in the same node (600 GB/sec)
+``?``: 3 nodes, dual A100s each (80 GB GPU RAM each), with NVlink between GPUs in the same node (600 GB/sec)
 
 Lastly, with these new GPU resources for Schooner, there are plans to obtain the next generation of GPUs (H100s). The current plan is for these to arrive maybe sometime late in 2023. 
 
@@ -58,8 +59,6 @@ In order to request ANY of the nodes available, add the following line of code t
 
     #SBATCH -p ai2es
 
-The priorty list for this command will be ``c314``, ``c315``, ``c731``, ``c732`` and then ``c733``. So usually you will
-get allocated the V100s first. 
 
 If you want to specifcally get the V100 add the following
 
@@ -88,6 +87,10 @@ Or if you want to specifcally get the A100 with 4 GPUS do the following
 +++++++++++++
 Sharing GPUs 
 +++++++++++++
+
+.. note::
+
+   This part of sharing GPUs will hopefully change this year. We are working on getting SLURM to handle things for us. 
 
 ----------------
 Selecting N-GPUs
@@ -121,7 +124,8 @@ If you know you will use ALL of the GPUs attached to a specifc node, you can use
     #SBATCH --exclusive
 
 This will make sure no one else can use your node or GPUs. Quick note, if you are using ALL of the GPUs you should be doing 
-distributed training. If you don't know what distributed training is, your probably don't need it. 
+distributed training. If you don't know what distributed training is, your probably don't need it. Distributed training helps
+with folks who have very large ML models and still want to have large-ish batch sizes. 
 
 If you are confused by all this, please reach out to me (Randy Chase; randychase 'at' ou 'dot' edu). 
 
@@ -130,7 +134,6 @@ Seeing which GPUs are in use
 ----------------------------
 
 It might not be clear right now, but because most people only use 1 GPU at a time (per script), it is hard to tell who is using which GPUs. For example, you can use the usual method to check the current usage of the ai2es nodes:
-
 
 .. code-block:: bash 
 
@@ -164,7 +167,9 @@ Then you should be all set. The job should get placed on c733 and GPU 3. Now, if
     #SBATCH --ntasks=4
     #SBATCH --mem=16G
 
-``--ntasks=4`` will allocated 4 cores to your job and ``--mem=16G`` will allocate 16 GB of RAM. 
+``--ntasks=4`` will allocated 4 CPUs to your job and ``--mem=16G`` will allocate 16 GB of RAM. 
+
+This table will hopefully be replaced by SLURM (i.e., a #SBATCH line), but this needs to be implemented by the OSCER folks and not sure when this will happen. 
 
 ---------
 Long Jobs 
