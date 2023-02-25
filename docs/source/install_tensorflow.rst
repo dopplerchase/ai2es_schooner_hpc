@@ -16,6 +16,11 @@ a specific CUDA library that is different from the library tensorflow 2.0 wants)
 year Anaconda has figured out all the nuances for us. So the reconmended method to getting tensorflow 
 install on Schooner is to use Anaconda.
 
+.. note::
+
+    If you need to have an enviroment for both tensorflow and pytorch, please let your supervisor know. We will need to request for more space
+    in the home directory to allow you to have both packages.
+
 ++++++++++++
 Get Anaconda
 ++++++++++++
@@ -191,7 +196,7 @@ if you put YOUR username in. It should show you what jobs you have running.
 
 .. note ::
 
-    ``squeue`` is one of my most repreated commands. I am lazy and hate typing out ``squeue -u username`` I have made some helpful aliases (e.g., shortcuts) that shorten this command. Check out this page: :ref:`other_tips`. 
+    ``squeue`` is one of my most repreated commands. I am lazy and hate typing out ``squeue -u username`` I have made some helpful aliases (e.g., shortcuts) that shorten this command. Check out Interacting with Schooner on :ref:`general_hpc_tips`. 
 
 Once it is done running, check the .err file to make sure there were no errors. If not, go ahead and check to make sure it worked! Open a quick python session and import tensorflow. This will take about a min for the first time importing tensorflow. 
 
