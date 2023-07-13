@@ -20,16 +20,34 @@ Current Setup
 
 As of 18 Dec 2022, AI2ES has a total of 20 GPUs that we own
 and can use. More specifically, we have 2 NVIDIA V100s
-(previous generation) and 18 NVIDIA A100s (current generation).
+(previous generation) and 18 NVIDIA A100s (current generation). Inside some of these nodes, "NVlink" connects the GPUs together
+at high bandwidth (i.e., can share information quickly) [the nodes with more than one GPU]. Each node has a local disk to do some fast computations on. This local disk is called $lscratch and varies per node. Also, the 
+amount of $lscratch you get scales with how many CPU threads you requested ``$SBATCH -n X; where X is the number of threads`` . 
 
-Inside some of these nodes, "NVlink" connects the GPUs together
-at high bandwidth (i.e., can share information quickly):
 
-``c314``, ``c315``: single V100 each (32 GB GPU RAM each)
+Here is a nice summary table of the nodes and their attributess
 
-``c731``: dual A100s (40 GB GPU RAM), with NVlink between GPUs (600 GB/sec)
+.. rst-class:: centered-table
 
-``c732``, ``c733``, ``c829``, ``c830``: quad A100s each (40 GB GPU RAM each), with NVlink between GPUs (600 GB/sec)
+    +---------+------------+---------------------+------------------+-----------------+-------------------+
+    |  node   | $lscratch  |  # of CPU threads   |  # of GPUs       |   GPU Type      | GPU RAM per card  |
+    +=========+============+=====================+==================+=================+===================+
+    |  c314   |   892GB    |        24           |       1          |      V100       |       32GB        |
+    +---------+------------+---------------------+------------------+-----------------+-------------------+
+    |  c315   |   892GB    |        24           |       1          |      V100       |       32GB        |
+    +---------+------------+---------------------+------------------+-----------------+-------------------+
+    |  c731   |   852GB    |        112          |       2          |      A100       |       40GB        |
+    +---------+------------+---------------------+------------------+-----------------+-------------------+
+    |  c732   |   384GB    |        128          |       4          |      A100       |       40GB        |
+    +---------+------------+---------------------+------------------+-----------------+-------------------+
+    |  c733   |   384GB    |        128          |       4          |      A100       |       40GB        |
+    +---------+------------+---------------------+------------------+-----------------+-------------------+
+    |  c829   |   384GB    |        128          |       4          |      A100       |       40GB        |
+    +---------+------------+---------------------+------------------+-----------------+-------------------+
+    |  c830   |   384GB    |        128          |       4          |      A100       |       40GB        |
+    +---------+------------+---------------------+------------------+-----------------+-------------------+
+
+
 
 ______________________
 New Schooner Resources
@@ -88,52 +106,50 @@ Or if you want to specifcally get the A100 with 4 GPUS do the following
 Sharing GPUs 
 +++++++++++++
 
-.. note::
-
-   This part of sharing GPUs will hopefully change this year. We are working on getting SLURM to handle things for us. 
-
-----------------
-Selecting N-GPUs
-----------------
-
-Now that you have figured out how to request a gpu node with sbatch, it is important to only use the 
-number of GPUs you NEED. A100s are a very valuable GPU and are some of the fastest GPUs out there for 
-deep learning. So you could see how requesting all 4 of them at time (for c732 and c733) and only using 1
-of them is a waste of computational hours. 
-
-By default, tensorflow will share the memory of your job across all 'visible' GPUs, which is all that are connected 
-to the node you are using. Consider the example where your deep learning model only takes up a total of 20 GB of RAM. 
-This job would be able to fit entirely on 1 GPU. So a more appropriate use of your job would be to specifically only use 1 GPU, 
-not all 4 (or 2 if you are on c731). 
-
-To do this, we will use that pip package `py3nvml <https://github.com/fbcotter/py3nvml>`_ which allows use to select the GPU 
-you wish to use. 
-
-.. code-block:: python
-
-    import py3nvml
-    py3nvml.grab_gpus(num_gpus=1, gpu_select=[0])
-    
-The following technique is suggested. Start with n_gpu=1, then if it fails saying not enough memory, then try n_gpu=2 
-(you will have to change gpu_select to be [0,1]) and so on. 
-
-If you know you will use ALL of the GPUs attached to a specifc node, you can use the following flag in your sbatch 
+By default, ``tensorflow-gpu`` will use all available GPUs and GPU memory. This is fine, if your node only has one GPU (e.g., the v100 nodes, c314 and c315), but our newer nodes have 
+multiple GPU cards installed. Thus, when multiple programs, or multiple users, attempt to use the same GPU, they can interfere destructively with one-another (i.e., crash the job and hault training). 
+To then prevent this from happening you can request the number of GPU cards in your sbatch script by adding the following: 
 
 .. code-block:: bash 
+    
+    #SBATCH -p ai2es_a100
+    #SBATCH --gres=gpu:1
 
-    #SBATCH --exclusive
+where this example requests 1 gpu from the a100 queue. If you wanted 2, change the ``1`` to ``2`` and so on. During execution, your batch file environment variable ``$CUDA_VISIBLE_DEVICES`` 
+will be set to a comma-separated string containing the integers of the physical GPUS that have been allocated. 
 
-This will make sure no one else can use your node or GPUs. Quick note, if you are using ALL of the GPUs you should be doing 
-distributed training. If you don't know what distributed training is, your probably don't need it. Distributed training helps
-with folks who have very large ML models and still want to have large-ish batch sizes. 
+Now once you added the above bit to your bash file, please add the following near the top of your python script: 
 
-If you are confused by all this, please reach out to me (Randy Chase; randychase 'at' ou 'dot' edu). 
+.. code-block:: python 
 
-----------------------------
-Seeing which GPUs are in use
-----------------------------
+    import os 
+    import tensorflow as tf 
 
-It might not be clear right now, but because most people only use 1 GPU at a time (per script), it is hard to tell who is using which GPUs. For example, you can use the usual method to check the current usage of the ai2es nodes:
+    if "CUDA_VISIBLE_DEVICES" in os.environ.keys():
+        # Fetch list of logical GPUs that have been allocated
+        #  Will always be numbered 0, 1, …
+        physical_devices = tf.config.list_visible_devices('GPU')
+        n_physical_devices = len(physical_devices)
+
+        # Set memory growth for each
+        for device in physical_devices:
+            tf.config.experimental.set_memory_growth(device, True)
+    else:
+	    #No allocated GPUs: do not delete this case!                                                                	 
+    	tf.config.set_visible_devices([], 'GPU')
+
+    # Do the work …
+
+This will ensure your training session only uses the GPUs that you have been allocated from your bash script. 
+
+This might seem annoying, but this is VITAL to the AI2ES GPUs and ensuring everyone can get what the they need done. 
+
+
+---------------------
+Checking GPU traffic
+---------------------
+
+It is hard to tell who is using which GPUs, but you can check to see which nodes are currently in use with the following: 
 
 .. code-block:: bash 
 
@@ -145,31 +161,15 @@ If the resulting output is blank, no one is using the nodes. If there are names 
    :width: 300
    :align: center
 
-The link for the table is `here <https://docs.google.com/spreadsheets/d/1L6R-sytmMlWyHTXYRJeHWwWSKdptOM8-YdrOwXOCdQo/edit?usp=sharing>`_, but you will have to email me to get edit access to it. The idea here is that if you plan on running your job for longer than a few hours (e.g, you are not actively debugging), please put your name and when you expect the job to finish in this table. This way others can quickly and easily see who is using which GPUs.
-
-Once you know what nodes/GPUs are free, to select a specific one using slurm you can do the following. Imagine c733, GPU 3 is available. I would have the following line in my SBATCH
-
-.. code-block:: bash 
-
-    #SBATCH -w c733 
-
-This line ensures my job will only get allocated to c733 where I know the GPU is free. Then make sure you add the following to your python script:
-
-.. code-block:: python 
-
-    import py3nvml
-    py3nvml.grab_gpus(num_gpus=1, gpu_select=[3])
-
-Then you should be all set. The job should get placed on c733 and GPU 3. Now, if SLURM tells you ``PRIORITY``, then it is likely the other people on the node have consumed all the CPU resources. Each node has about 20 CPU cores and ~ 30 GB of RAM. Try adjusting your following lines
+When you submit a jon and if SLURM tells you ``PRIORITY``, then it is likely the other people on the node have consumed all the CPU resources or all the GPUs for the queue you chose
+are being used (e.g., ``#SBATCH -p ai2es_a100``). As a reminder, each node has about 20 CPU cores and ~ 30 GB of RAM. Try adjusting your following lines
 
 .. code-block:: bash 
 
     #SBATCH --ntasks=4
     #SBATCH --mem=16G
 
-``--ntasks=4`` will allocated 4 CPUs to your job and ``--mem=16G`` will allocate 16 GB of RAM. 
-
-This table will hopefully be replaced by SLURM (i.e., a #SBATCH line), but this needs to be implemented by the OSCER folks and not sure when this will happen. 
+``--ntasks=4`` will allocated 4 CPUs to your job and ``--mem=16G`` will allocate 16 GB of RAM or submit to a different GPU queue. 
 
 ---------
 Long Jobs 
