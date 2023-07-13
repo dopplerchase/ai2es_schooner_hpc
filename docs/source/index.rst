@@ -7,7 +7,7 @@ Welcome to the AI2ES Schooner HPC Guide
 
 .. note::
 
-   This project is under active development. Last edit made on 25 Feb 2023 by RJC
+   This project is under active development. Last edit made on 13 Jul 2023 by RJC with the help of ChatGPT
 
 ++++++++++++
 Introduction
@@ -32,6 +32,8 @@ this guide is intended to support everyone trying to learn how to use them. If y
 please feel free to reach out to me, Randy Chase, by email (randy.chase 'at' colostate 'dot' edu) or in our AI2ES Slack (either directly, or in the #schooner channel). 
 I am a meteorologist by training, so this guide has been written through my trial and error.
 
+A good supplementary source of information to this webpage is a presentation by Mel, Jay and Dr. Andy Fagg `Google Slides <https://docs.google.com/presentation/d/1ctPshEn6Mj8lYwBqhk0YgJQ8yMYLzattO-y6BRp1Il8/edit#slide=id.g2130bb3498f_0_18>`_
+
 Contents
 --------
 
@@ -42,4 +44,5 @@ Contents
    general_gpu
    install_other_pkgs
    tensorboard
+   weights_and_biases
    github

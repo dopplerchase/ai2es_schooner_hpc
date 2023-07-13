@@ -3,6 +3,11 @@
 Install Tensorflow/Pytorch
 ==========================
 
+.. note::
+
+   It was announced this week (13 Jul 2023) that keras 3.0 (keras_core) will support tensorflow, pytorch and jax. These docs will have to be updated in the near future. 
+
+
 .. image:: images/torchandtf.png
    :width: 600
    :align: center
