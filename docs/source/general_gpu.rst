@@ -155,13 +155,9 @@ It is hard to tell who is using which GPUs, but you can check to see which nodes
 
     $ squeue -p ai2es,ai2es_v100,ai2es_a100,ai2es_a100_2,ai2es_a100_4
 
-If the resulting output is blank, no one is using the nodes. If there are names listed, it shows you who is using what node and for how long the jobs have been running but it does not tell you how many of the GPUs on any single node (or which specific GPUs they are using). To assure smooth sharing, right now we will use the following 'sign-out' table: 
+If the resulting output is blank, no one is using the nodes.
 
-.. image:: images/GPU_Sharing_Table.png
-   :width: 300
-   :align: center
-
-When you submit a jon and if SLURM tells you ``PRIORITY``, then it is likely the other people on the node have consumed all the CPU resources or all the GPUs for the queue you chose
+When you submit a job and if SLURM tells you ``PRIORITY``, then it is likely the other people on the node have consumed all the CPU resources or all the GPUs for the queue you chose
 are being used (e.g., ``#SBATCH -p ai2es_a100``). As a reminder, each node has about 20 CPU cores and ~ 30 GB of RAM. Try adjusting your following lines
 
 .. code-block:: bash 
