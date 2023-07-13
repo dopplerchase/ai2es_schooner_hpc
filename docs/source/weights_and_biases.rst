@@ -14,7 +14,7 @@ then number of layers, the optimizer, the regularization etc. all need to be var
 performing model. This can quickly become cumbersome (given how quickly permuations grow). 
 
 One way of hangling a hyperparameter search is to use a program called `Weights and Biases <https://wandb.ai/site>`_. In order to get started with W&B, follow this document.
-This quickstart was written by Dr. Monique Shonde, so reach out to her if you have questions! 
+This quickstart was written by Dr. Monique Shotande, so reach out to her if you have questions! 
 
 
 ++++++++++++++++++++++++++++++
