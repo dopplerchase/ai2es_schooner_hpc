@@ -46,6 +46,10 @@ Here is a nice summary table of the nodes and their attributess
     +---------+------------+---------------------+------------------+-----------------+-------------------+
     |  c830   |   384GB    |        128          |       4          |      A100       |       40GB        |
     +---------+------------+---------------------+------------------+-----------------+-------------------+
+    |  c980   |   384GB    |        128          |       2          |      H100       |       80GB        |
+    +---------+------------+---------------------+------------------+-----------------+-------------------+
+    |  c981   |   384GB    |        128          |       2          |      H100       |       80GB        |
+    +---------+------------+---------------------+------------------+-----------------+-------------------+
 
 
 
@@ -55,13 +59,8 @@ ______________________
 
 In addition to the new AI2ES resources, AI2ES project members will also have
 access to OSCER-owned GPUs as well. At this time I don't have specifics, but know
-there is a partition named ``gpu`` which is where the OSCER gpus can be used. 
-
-``?``: 3 nodes, dual A100s each (40 GB GPU RAM each), NO NVlink (i.e., can't share data across them)
-
-``?``: 3 nodes, dual A100s each (80 GB GPU RAM each), with NVlink between GPUs in the same node (600 GB/sec)
-
-Lastly, with these new GPU resources for Schooner, there are plans to obtain the next generation of GPUs (H100s). The current plan is for these to arrive maybe sometime late in 2023. 
+there is are partitions named ``debug_gpu``, ``gpu``, ``gpu_a100``. Please reach out to oscer help
+to figure out the specifics on these nodes. 
 
 .. note::
 

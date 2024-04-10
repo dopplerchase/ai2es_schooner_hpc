@@ -7,7 +7,7 @@ Welcome to the AI2ES Schooner HPC Guide
 
 .. note::
 
-   This project is under active development. Last edit made on 13 Jul 2023 by RJC with the help of ChatGPT
+   This project is under active development. Last edit made on 10 Apr 2024 by RJC with the help of ChatGPT
 
 ++++++++++++
 Introduction
@@ -26,7 +26,7 @@ Background
 
 Machine Learning, more specifically deep learning, is accelerated by the use of GPUs. Thus, as part of AI2ES 
 there are a suite of computational nodes that have GPUs available for AI2ES members to use. More specifically,
-we currently have a total of 2 V100s (32 GB of RAM each) and 18 A100s (40 GB of RAM each).
+we currently have a total of 2 V100s (32 GB of RAM each), 18 A100s (40 GB of RAM each) and 4 H100s (80 GB of RAM each).
 Unfortunately, there is a bit of a learning curve to get up to speed with efficent use of these computing resources, so 
 this guide is intended to support everyone trying to learn how to use them. If you have any specific questions, 
 please feel free to reach out to me, Randy Chase, by email (randy.chase 'at' colostate 'dot' edu) or in our AI2ES Slack (either directly, or in the #schooner channel). 
@@ -46,3 +46,4 @@ Contents
    tensorboard
    weights_and_biases
    github
+   cira
