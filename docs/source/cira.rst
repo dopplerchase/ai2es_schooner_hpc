@@ -3,7 +3,7 @@
 CIRA
 ============
 
-.. image:: images/cira18logo.png
+.. image:: images/cira18Logo.png
    :width: 400
    :align: center
 
