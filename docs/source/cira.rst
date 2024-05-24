@@ -57,19 +57,53 @@ Make a Docker file that you will compile. This file will have several lines in i
 .. code-block:: bash
 
     # Install specific pytorch image from NVIDIA toolkits 
-    FROM nvcr.io/nvidia/pytorch:24.03-py3
+    FROM nvcr.io/nvidia/pytorch:24.04-py3
 
     # Install PyTorch-based libraries diffusers and transformers
     RUN pip install diffusers["torch"] transformers matplotlib tensorboard accelerate
 
-    # name the workspace 
+    # Expose the desired port (XXXX in this case)
+    EXPOSE XXXX
+
+    # Create a Jupyter configuration file with the specified port
+    RUN jupyter lab --generate-config && \
+        echo "c.ServerApp.port = XXXX" >> ~/.jupyter/jupyter_lab_config.py && \
+        echo "c.ServerApp.ip = '0.0.0.0'" >> ~/.jupyter/jupyter_lab_config.py && \
+        echo "c.ServerApp.open_browser = False" >> ~/.jupyter/jupyter_lab_config.py && \
+        echo "c.ServerApp.allow_root = True" >> ~/.jupyter/jupyter_lab_config.py
+
     WORKDIR /workspace
 
-    # bash shell, because this is what i am use to
-    CMD ["bash"] 
+     CMD ["bash"]
 
 
-Name this file Dockerfile (important so the config call identifies the right file). 
+If you don't use Jupyter Lab, you can delete the EXPOSE line and the RUN jupyter line. 
+
+If you want to use tensorflow, I was able to get the GPU to work with the following but fill in the XXXX with the port you use to tunnel into the machine with 
+
+.. code-block:: bash
+
+    # Install specific pytorch image from NVIDIA toolkits 
+    FROM nvcr.io/nvidia/tensorflow:24.04-tf2-py3
+
+    # Install PyTorch-based libraries diffusers and transformers
+    RUN pip matplotlib tensorboard 
+
+    # Expose the desired port (XXXX in this case)
+    EXPOSE XXXX
+
+    # Create a Jupyter configuration file with the specified port
+    RUN jupyter lab --generate-config && \
+        echo "c.ServerApp.port = XXXX" >> ~/.jupyter/jupyter_lab_config.py && \
+        echo "c.ServerApp.ip = '0.0.0.0'" >> ~/.jupyter/jupyter_lab_config.py && \
+        echo "c.ServerApp.open_browser = False" >> ~/.jupyter/jupyter_lab_config.py && \
+        echo "c.ServerApp.allow_root = True" >> ~/.jupyter/jupyter_lab_config.py
+
+    WORKDIR /workspace
+
+     CMD ["bash"]
+
+Name your file: ``Dockerfile`` (important so the config call identifies the right file). 
 
 2) Compile Dockerfile  
 
@@ -103,7 +137,7 @@ You are ready to run your docker image, so go ahead and call it
 
 .. code-block:: console 
     
-    $ docker run --gpus all -it --rm -v /mnt/data1:/mnt/data1/ my_custom_pytorch_image ``` 
+    $ docker run --gpus all -it --rm -v /mnt/data1:/mnt/data1/ my_custom_pytorch_image  
 
 You will want to mount your data directory to it, to do that you can see the ``/mnt/data1:/mnt/data1/`` which is the ``source_dir_in_default_machine / where_you_want_the_dir_on_the_docker_image``. For this example I just map it to the same directory path. 
 
@@ -124,3 +158,25 @@ It should say ``True`` , exit out (``$ exit()``) and run your python now. Here i
     accelerate launch train_diffusion_model.py
 
 Then to exit out of the screen (i.e., to run it in the background) do cntrl + a + d , this will 'detach' the screen so you can check nvidia-smi or run tensorboard (to monitor progress).
+
+6) Optional, if you want Jupyter 
+
+If you like using jupyter, just add a port forward to your docker image call (make sure its the same as the port you tunneled with)
+
+.. code-block:: console 
+    
+    $ docker run --gpus all -it --rm -p XXXX:XXXX -v /mnt/data1:/mnt/data1 my_custom_pytorch_image  
+
+Now in the docker session run jupyter lab with your port 
+
+.. code-block:: console 
+    
+    $ jupyter lab --port=XXXX 
+
+It will output something like this: 
+
+``http://hostname:8888/?token=LETTERandNUMBERS``
+
+Copy just the token, then go to your browser and type in ``localhost:XXXX``. Insert the token where it asks for it. 
+
+Then you should be good to go. 
